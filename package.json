@@ -1,0 +1,26 @@
+{
+  "name": "daddy-inu-nft",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "inu:deploy": "tsc && node ./dist/deploy/deploy.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@metaplex-foundation/mpl-candy-machine": "6.0.0-alpha.20",
+    "@metaplex-foundation/mpl-toolbox": "^0.9.1",
+    "@metaplex-foundation/umi": "^0.8.10",
+    "@metaplex-foundation/umi-bundle-defaults": "^0.8.10",
+    "@solana/web3.js": "^1.87.6"
+  },
+  "devDependencies": {
+    "@metaplex-foundation/mpl-token-metadata": "^3.1.2",
+    "@types/node": "^20.10.5",
+    "commander": "^11.1.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  }
+}
