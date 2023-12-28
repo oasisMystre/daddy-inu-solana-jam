@@ -3,3 +3,5 @@ node_modules
 test.ts
 keypair.json
 .vscode
+nft-config
+dist
