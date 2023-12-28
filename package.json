@@ -2,7 +2,8 @@
   "name": "daddy-inu-nft",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
+  "bin": "./dist/deploy/cli.js",
   "scripts": {
     "inu:deploy": "tsc && node ./dist/deploy/deploy.js"
   },

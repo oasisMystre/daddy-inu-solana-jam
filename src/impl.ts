@@ -1,12 +1,6 @@
+import { Umi } from "@metaplex-foundation/umi";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { publicKey, Umi } from "@metaplex-foundation/umi";
-import {
-  fetchCandyMachine,
-  fetchCandyGuard,
-  mplCandyMachine,
-  CandyGuard,
-  CandyMachine,
-} from "@metaplex-foundation/mpl-candy-machine";
+import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
 
 export default class BaseDaddyInuImpl {
   public readonly umi: Umi;
@@ -16,21 +10,5 @@ export default class BaseDaddyInuImpl {
     else this.umi = endpoint;
 
     this.umi.use(mplCandyMachine()).use(mplCandyMachine());
-  }
-
-  async fetchCandyMachineAndGuard(
-    candyMachineAddress: string
-  ): Promise<[CandyMachine, CandyGuard]> {
-    const candyMachine = await fetchCandyMachine(
-      this.umi,
-      publicKey(candyMachineAddress)
-    );
-
-    const candyGuard = await fetchCandyGuard(
-      this.umi,
-      candyMachine.mintAuthority
-    );
-
-    return [candyMachine, candyGuard];
   }
 }

@@ -1,32 +1,15 @@
 /// Author: Oguntunde Caleb Fiyinfoluwa <oasis.mystre@gmail.com>
-
-import {
-  addConfigLines,
-  CandyGuard,
-  CandyMachine,
-  ConfigLine,
-  updateCandyGuard,
-  DefaultGuardSetArgs,
-} from "@metaplex-foundation/mpl-candy-machine";
-
 import {
   createNft,
-  TokenStandard,
+  fetchMetadataFromSeeds,
+  updateV1,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { create } from "@metaplex-foundation/mpl-candy-machine";
-import { generateSigner, some } from "@metaplex-foundation/umi";
+import { generateSigner } from "@metaplex-foundation/umi";
 import { publicKey } from "@metaplex-foundation/umi";
 
 import BaseDaddyInuImpl from "./impl";
 
 type NFTInput = Omit<Parameters<typeof createNft>[1], "mint" | "authority">;
-type CreateInput = Omit<
-  Parameters<typeof create>[1],
-  | "candyMachine"
-  | "collectionMint"
-  | "tokenStandard"
-  | "collectionUpdateAuthority"
->;
 
 export default class DaddyInu extends BaseDaddyInuImpl {
   async createNFT(nftInput: NFTInput) {
@@ -42,65 +25,18 @@ export default class DaddyInu extends BaseDaddyInuImpl {
     return [mint, authority];
   }
 
-  async createCandyMachine(
-    [mint, authority]: Awaited<ReturnType<typeof this.createNFT>>,
-    createInput: CreateInput
+  async updateNFT(
+    mintAddress: string,
+    params: Omit<Parameters<typeof updateV1>[1], "mint">
   ) {
-    const candyMachine = generateSigner(this.umi);
-    await (
-      await create(this.umi, {
-        candyMachine,
-        authority: mint.publicKey,
-        collectionMint: mint.publicKey,
-        collectionUpdateAuthority: authority,
-        tokenStandard: TokenStandard.NonFungible,
-        ...createInput,
-        creators: [
-          {
-            address: this.umi.identity.publicKey,
-            verified: true,
-            percentageShare: 1,
-          },
-          ...createInput.creators,
-        ],
-        configLineSettings: some({
-          prefixName: "",
-          prefixUri: "",
-          nameLength: 8,
-          uriLength: 32,
-          isSequential: true,
-          ...createInput.configLineSettings,
-        }),
-      })
-    )
-    .sendAndConfirm(this.umi);
+    const mint = publicKey(mintAddress);
 
-    return candyMachine;
-  }
+    const initialMetadata = await fetchMetadataFromSeeds(this.umi, { mint });
 
-  insertNFTItems(
-    candyMachine: CandyMachine,
-    items: ConfigLine[],
-    index?: number
-  ) {
-    return addConfigLines(this.umi, {
-      candyMachine: publicKey(candyMachine.publicKey),
-      index: index ?? candyMachine.itemsLoaded,
-      configLines: items,
+    return updateV1(this.umi, {
+      mint,
+      ...params,
+      data: { ...initialMetadata, ...params.data },
     }).sendAndConfirm(this.umi);
-  }
-
-  updateCandyGuards(
-    candyGuard: CandyGuard,
-    guards: Partial<DefaultGuardSetArgs>
-  ) {
-    return updateCandyGuard(this.umi, {
-      candyGuard: candyGuard.publicKey,
-      guards: {
-        ...candyGuard.guards,
-        ...guards,
-      },
-      groups: candyGuard.groups,
-    });
   }
 }
