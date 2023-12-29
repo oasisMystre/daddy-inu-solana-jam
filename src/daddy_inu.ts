@@ -30,7 +30,6 @@ export default class DaddyInu extends BaseDaddyInuImpl {
     params: Omit<Parameters<typeof updateV1>[1], "mint">
   ) {
     const mint = publicKey(mintAddress);
-
     const initialMetadata = await fetchMetadataFromSeeds(this.umi, { mint });
 
     return updateV1(this.umi, {

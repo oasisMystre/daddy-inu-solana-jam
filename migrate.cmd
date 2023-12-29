@@ -1,0 +1,1 @@
+ts-node ./deploy/cli.ts create --keypair=./keypair.json --path=./nft-config/dinu.json --endpoint=https://api.devnet.solana.com

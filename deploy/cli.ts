@@ -1,23 +1,10 @@
 import { program } from "commander";
-import { readFileSync } from "fs";
-import { keypairIdentity } from "@metaplex-foundation/umi";
 
-import DaddyInu from "../src/daddy_inu";
 import { createMint, updateMint } from "./deploy";
-import { loadConfigs, walkDirectory } from "./utils";
-
-function initialize(path: string, endpoint: string) {
-  const keypair = readFileSync(path);
-
-  const dinu = new DaddyInu(endpoint);
-  const wallet = dinu.umi.eddsa.createKeypairFromSeed(keypair);
-  dinu.umi.use(keypairIdentity(wallet));
-
-  return dinu;
-}
+import { initialize, loadConfigs, walkDirectory } from "./utils";
 
 program
-  .name("Big Daddy Inu (BDI) NFT Mintter")
+  .name("Big Daddy Inu (BDI) NFT Minter")
   .description(
     "Create and update Solana NFT data with just a single json config"
   )
@@ -25,24 +12,28 @@ program
 
 program
   .command("create")
-  .requiredOption("--enpoint <string>", "solana rpc endpoint")
+  .requiredOption("--endpoint <string>", "solana rpc endpoint")
   .requiredOption("--keypair <string>", "solana wallet keypair secret")
   .requiredOption("--path <string>", "nft config directory or file")
   .action(async (options) => {
+    console.log("creating...");
     const { keypair, path, endpoint } = options;
     const dinu = initialize(keypair, endpoint);
+    console.log("keypair initialized");
 
     const configs = loadConfigs(walkDirectory(path));
+    console.log(configs);
     const promise = configs
-      .filter(([config]) => config.metadata === null)
+      .filter(([config]) => config.metadata === undefined)
       .map((args) => createMint(dinu, ...args));
-
-    await Promise.all(promise);
+    console.log("minting....");
+    await Promise.all(promise).catch(console.log);
+    console.log("mint successful");
   });
 
 program
-  .command("create")
-  .requiredOption("--enpoint <string>", "solana rpc endpoint")
+  .command("update")
+  .requiredOption("--endpoint <string>", "solana rpc endpoint")
   .requiredOption("--keypair <type>", "solana wallet keypair secret")
   .option("--path <string>", "nft pack config directory or file")
   .action(async (options) => {

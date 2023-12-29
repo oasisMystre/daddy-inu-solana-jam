@@ -65,7 +65,13 @@ export async function createMint(
   config: Config,
   writer: Writer = noops
 ) {
+  console.log(`Minting ${config.mint.name}...`);
   const [mintSigner, authoritySigner] = await dinu.createNFT(loadMint(config));
+
+  console.log(`${config.mint.name} Mint address ✅: ${mintSigner.publicKey}`);
+  console.log(
+    `${config.mint.name} authority address ✅: ${authoritySigner.publicKey}`
+  );
 
   config.metadata = {
     mint: mintSigner.publicKey,
@@ -88,4 +94,5 @@ export async function updateMint(dinu: DaddyInu, config: Config) {
   };
 
   await dinu.updateNFT(metadata.mint, { data });
+  console.log(`${config.mint.name} Mint updated successfully`);
 }
