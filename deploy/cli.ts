@@ -1,5 +1,7 @@
 import { program } from "commander";
+import { readFileSync } from "fs";
 
+import  type { Cache } from "./type";
 import { createMint, updateMint } from "./deploy";
 import { initialize, loadConfigs, walkDirectory } from "./utils";
 
@@ -16,17 +18,16 @@ program
   .requiredOption("--keypair <string>", "solana wallet keypair secret")
   .requiredOption("--path <string>", "nft config directory or file")
   .action(async (options) => {
-    console.log("creating...");
     const { keypair, path, endpoint } = options;
+    console.log("Dinu initializing 💤");
     const dinu = initialize(keypair, endpoint);
-    console.log("keypair initialized");
 
     const configs = loadConfigs(walkDirectory(path));
-    console.log(configs);
     const promise = configs
       .filter(([config]) => config.metadata === undefined)
       .map((args) => createMint(dinu, ...args));
-    console.log("minting....");
+    console.log("minting 🗡....");
+
     await Promise.all(promise).catch(console.log);
     console.log("mint successful");
   });
@@ -35,7 +36,7 @@ program
   .command("update")
   .requiredOption("--endpoint <string>", "solana rpc endpoint")
   .requiredOption("--keypair <type>", "solana wallet keypair secret")
-  .option("--path <string>", "nft pack config directory or file")
+  .requiredOption("--path <string>", "nft pack config directory or file")
   .action(async (options) => {
     const { keypair, path, endpoint } = options;
     const dinu = initialize(keypair, endpoint);
@@ -46,6 +47,30 @@ program
       .map(([config]) => updateMint(dinu, config));
 
     await Promise.all(promise);
+  });
+
+program
+  .command("update-candy-machine")
+  .requiredOption("--endpoint <string>", "solana rpc endpoint")
+  .requiredOption("--keypair <path>", "solana wallet keypair secret")
+  .option("--address <string>", "candy machine addresss")
+  .option("--itemsAvailable <number>", "candy machine available number")
+  .action(async (options) => {
+    let { keypair, endpoint, address, itemsAvailable } = options;
+    if (!address) {
+      const cacheFile = readFileSync("./cache.json", "utf-8");
+      const cache: Cache = JSON.parse(cacheFile);
+      address = cache.program.candyMachine;
+    }
+
+    const dinu = initialize(keypair, endpoint);
+    console.log("updating candy machine 💤");
+
+    await dinu.updateCandyMachine(address, {
+      itemsAvailable,
+    });
+
+    console.log("candy machine update successfully ✅");
   });
 
 program.parse();

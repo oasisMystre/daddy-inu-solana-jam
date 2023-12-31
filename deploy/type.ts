@@ -21,3 +21,22 @@ export type Config = {
     authority: string;
   };
 };
+
+export type Cache = {
+  program: {
+    candyMachine: string;
+    candyGuard: string;
+    candyMachineCreator: string;
+    collectionMint: string;
+  };
+  items: {
+    [key: string]: {
+      name: string;
+      image_hash: string;
+      image_link: string;
+      metadata_hash: string;
+      metadata_link: string;
+      onChain: boolean;
+    };
+  };
+};

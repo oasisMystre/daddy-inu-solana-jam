@@ -5,3 +5,7 @@ keypair.json
 .vscode
 nft-config
 dist
+*.log
+cache.json 
+config.json 
+temp.json

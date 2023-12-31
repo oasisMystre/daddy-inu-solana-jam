@@ -51,14 +51,34 @@ export type Config = {
     authority: string;
   };
 };
-
 ```
 
+## Candy machine 
+
+When installing dinu-jam sugar is installed if not exist 
+
+Check [sugar](https://developers.metaplex.com/candy-machine/sugar) documentation on how to use
+
+## hiddenConfig
+When using sugar you can set number for more than assets available you have to create multiple assets but hiddenConfig make life easier.
+
+1. Set the hiddenConfig in sugar `config.json`
+2. set number to zero 
+3. then use dinu-jam to update itemAvailable using this command 
+
+```bash
+dinu-jam update-candy-machine \
+--keypair=./keypair.json \
+--endpoint=https://api.devnet.solana.com \
+--itemsAvailable=10000
+```
+
+> You can increase candymachine items number by increasing itemsAvailable without having to create 10000 asset configs
 
 ## Milestone 
 
 - [x] Create, Mint, Update multiple and single NFT config 
-- [ ] Support Metaplex candy machine 🚧🚧
+- [x] Support Metaplex candy machine 🚧🚧
 - [ ] Faster update by diffing config files 🚧🚧
 
 ## Why not use sugar?

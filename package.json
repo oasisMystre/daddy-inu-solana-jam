@@ -4,9 +4,9 @@
   "description": "",
   "main": "./src/index.js",
   "bin": "./dist/deploy/cli.js",
-  
   "scripts": {
-    "inu:deploy": "tsc && node ./dist/deploy/deploy.js"
+    "build": "tsc",
+    "postinstall": "chmod u+x install.sh && ./install.sh"
   },
   "author": "",
   "license": "ISC",

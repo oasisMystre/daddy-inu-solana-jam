@@ -5,13 +5,11 @@ import {
   Data,
   printSupply,
 } from "@metaplex-foundation/mpl-token-metadata";
+import { some, publicKey, Amount } from "@metaplex-foundation/umi";
 
 import type { Config } from "./type";
 import DaddyInu from "../src/daddy_inu";
 import { percentAmount } from "@metaplex-foundation/umi";
-import { Amount } from "@metaplex-foundation/umi";
-import { publicKey } from "@metaplex-foundation/umi";
-import { some } from "@metaplex-foundation/umi";
 
 const noops = (...args: any) => void 0;
 

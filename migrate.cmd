@@ -1,1 +1,2 @@
 ts-node ./deploy/cli.ts create --keypair=./keypair.json --path=./nft-config/dinu.json --endpoint=https://api.devnet.solana.com
+ts-node ./deploy/cli.ts update-candy-machine --keypair=./keypair.json --endpoint=https://api.devnet.solana.com --itemsAvailable=10000
